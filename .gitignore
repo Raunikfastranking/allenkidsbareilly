@@ -1,0 +1,8 @@
+# Large binary — distribute via GitHub Releases instead
+*.apk
+
+# OS / editor files
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.log
