@@ -1,7 +1,13 @@
 <?php
 $page =  "/";
 require_once 'proxy/api.php';
-$homePage = fetchApiData("api/pages/best-preschool-in-bareilly-your-childs-second-home");
+$indexApiData = fetchApiDataMulti([
+    "api/pages/best-preschool-in-bareilly-your-childs-second-home",
+    "api/statistics/branch/5",
+    "api/galleries/events/branch/5",
+    "api/school-sessions",
+]);
+$homePage = $indexApiData["api/pages/best-preschool-in-bareilly-your-childs-second-home"];
 require_once "layouts/layout-function.php";
 $pageData = $homePage;
 ?>

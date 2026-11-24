@@ -4,17 +4,11 @@ require_once 'config.php';
 function fetchApiData($endpoint) {
     $url = rtrim(API_BASE_URL, '/') . '/' . ltrim($endpoint, '/');
 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, api_auth_headers());
-
-    $response = curl_exec($ch);
-    if (curl_errno($ch)) {
-        echo "cURL Error: " . curl_error($ch);
+    $body = api_get_cached($url);
+    if ($body === null) {
+        echo "cURL Error: unable to reach API";
         return null;
     }
-    curl_close($ch);
 
-    return json_decode($response, true);
+    return json_decode($body, true);
 }

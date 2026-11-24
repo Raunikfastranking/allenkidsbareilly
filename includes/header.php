@@ -7,13 +7,21 @@ if (!isset($page)) {
 }
 
 $api_url = "https://allenkids.allenhouseschools.com";
-$homePage = fetchApiData("api/pages/best-preschool-in-bareilly-your-childs-second-home");
-$blogData = fetchApiData("api/blogs/branch/5");
-$layoutParts = fetchApiData("api/public/branches/5/layout-parts/");
+$headerApiData = fetchApiDataMulti([
+    "api/pages/best-preschool-in-bareilly-your-childs-second-home",
+    "api/blogs/branch/5",
+    "api/public/branches/5/layout-parts/",
+    "api/menus/5",
+    "api/link-groups/",
+    "api/school-sessions",
+]);
+$homePage = $headerApiData["api/pages/best-preschool-in-bareilly-your-childs-second-home"];
+$blogData = $headerApiData["api/blogs/branch/5"];
+$layoutParts = $headerApiData["api/public/branches/5/layout-parts/"];
 $header_data = $layoutParts[0]['meta_data'] ?? [];
 $footer_data = $layoutParts[1]['meta_data'] ?? [];
-$menuData = fetchApiData("api/menus/5");
-$footer_links = fetchApiData("api/link-groups/");
+$menuData = $headerApiData["api/menus/5"];
+$footer_links = $headerApiData["api/link-groups/"];
 require_once __DIR__ . '/session-api.php';
 $sessions = allenkids_fetch_sessions();
 

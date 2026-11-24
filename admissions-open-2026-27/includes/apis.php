@@ -8,17 +8,21 @@ function fetchMultipleApiData($endpoints)
     $baseUrl = rtrim(API_BASE_URL, '/') . '/api';
     $mh = curl_multi_init();
     $curlHandles = [];
+    $pending = [];
     $responses = [];
-    // Create all curl handles
+    // Serve fresh cache hits immediately, queue the rest for parallel fetch
     foreach ($endpoints as $key => $endpoint) {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $baseUrl . $endpoint);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, api_auth_headers());
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER , (!preg_match('/^(localhost|127[.]0[.]0[.]1|192[.]168[.]1[.]195|.*[.]localhost)(:[0-9]+)?$/i', $_SERVER['HTTP_HOST'] ?? '')));
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST , ((!preg_match('/^(localhost|127[.]0[.]0[.]1|192[.]168[.]1[.]195|.*[.]localhost)(:[0-9]+)?$/i', $_SERVER['HTTP_HOST'] ?? '')) ? 2 : 0));
-        curl_multi_add_handle($mh, $ch);
-        $curlHandles[$key] = $ch;
+        $url = $baseUrl . $endpoint;
+        $fresh = false;
+        $cached = api_cache_get($url, $fresh);
+        if ($cached !== null && $fresh) {
+            $responses[$key] = $cached;
+        } else {
+            $ch = api_get_handle($url);
+            curl_multi_add_handle($mh, $ch);
+            $curlHandles[$key] = $ch;
+            $pending[$key] = ['url' => $url, 'stale' => $cached];
+        }
     }
     $running = null;
     do {
@@ -27,18 +31,31 @@ function fetchMultipleApiData($endpoints)
         if ($status > CURLM_OK) {
              break;
         }
-        curl_multi_select($mh);
-        usleep(10000);
+        if (curl_multi_select($mh) === -1) {
+            usleep(10000);
+        }
     } while ($running > 0);
 
     // Collect responses
     foreach ($curlHandles as $key => $ch) {
         $content = curl_multi_getcontent($ch);
-        $responses[$key] = json_decode($content, true);
+        $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $info = $pending[$key];
+        if ($content === false || $content === null || ($httpCode >= 500 && $info['stale'] !== null)) {
+            $responses[$key] = $info['stale'];
+        } else {
+            if ($httpCode >= 200 && $httpCode < 300 && $content !== '') {
+                api_cache_put($info['url'], $content);
+            }
+            $responses[$key] = $content;
+        }
         curl_multi_remove_handle($mh, $ch);
         curl_close($ch);
     }
     curl_multi_close($mh);
+    foreach ($responses as $key => $body) {
+        $responses[$key] = $body === null ? null : json_decode($body, true);
+    }
     return $responses;
 }
 $endpoints = [

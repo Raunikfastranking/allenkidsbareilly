@@ -413,8 +413,10 @@
  }
 
  .newsletter-bg {
+   background-color: #223668;
    background-image: url("../../assets/images/contact/newsletter.webp");
    background-repeat: no-repeat;
+   background-size: 100% 100%;
  }
 
  .event-news-cover {

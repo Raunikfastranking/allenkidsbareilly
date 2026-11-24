@@ -63,19 +63,10 @@ $pageSlug = $page;
 $api_url = API_BASE_URL;
 
 $pageApiUrl = rtrim(API_BASE_URL, '/') . "/api/pages/$pageSlug";
-$pageCh = curl_init($pageApiUrl);
-curl_setopt_array($pageCh, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_TIMEOUT        => 15,
-    CURLOPT_CONNECTTIMEOUT => 5,
-    CURLOPT_SSL_VERIFYPEER => (!preg_match('/^(localhost|127[.]0[.]0[.]1|192[.]168[.]1[.]195|.*[.]localhost)(:[0-9]+)?$/i', $_SERVER['HTTP_HOST'] ?? '')),
-    CURLOPT_HTTPHEADER     => api_auth_headers(),
-]);
-$pageResponse = curl_exec($pageCh);
-$pageHttpCode = curl_getinfo($pageCh, CURLINFO_HTTP_CODE);
-curl_close($pageCh);
+$pageHttpCode = 0;
+$pageResponse = api_get_cached($pageApiUrl, $pageHttpCode);
 
-if ($pageResponse === false || empty($pageResponse) || $pageHttpCode !== 200) {
+if (empty($pageResponse) || $pageHttpCode !== 200) {
     header('HTTP/1.0 404 Not Found');
     if (file_exists(__DIR__ . '/404.php')) {
         include '404.php';
