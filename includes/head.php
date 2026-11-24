@@ -2,8 +2,8 @@
 <?php require_once __DIR__ . '/form-proxy-config.php'; ?>
 <?php require_once __DIR__ . '/allen-site-root.php'; ?>
 <base href="<?php echo ($AllenSiteRoot ? $AllenSiteRoot : '') . '/'; ?>">
-<link rel="stylesheet" href="assets/css/style.css">
-<link rel="stylesheet" href="assets/css/responsive.css">
+<link rel="stylesheet" href="assets/css/style.css?v=2">
+<link rel="stylesheet" href="assets/css/responsive.css?v=2">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="icon" type="image/x-icon" href="./assets/images/favi.png">
