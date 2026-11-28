@@ -232,24 +232,30 @@ $phone = trim($footer_data['footer_phones'] ?? "");
          const hopenBtn = document.getElementById('openEnquiryPopup');
          const hcloseBtn = document.getElementById('closeEnquiryPopup');
 
+         function hcloseEnquiryPopup() {
+             hpopupOverlay?.classList.add('hidden');
+             document.body.classList.remove('enquiry-modal-open');
+             document.body.style.overflow = '';
+         }
+
          hopenBtn?.addEventListener('click', function(e) {
              e.preventDefault();
              hpopupOverlay.classList.remove('hidden');
+             document.body.classList.add('enquiry-modal-open');
+             document.body.style.overflow = 'hidden';
                                    });
 
-         hcloseBtn?.addEventListener('click', () => {
-             hpopupOverlay.classList.add('hidden');
-                                   });
+         hcloseBtn?.addEventListener('click', hcloseEnquiryPopup);
 
          hpopupOverlay?.addEventListener('click', (e) => {
              if (e.target === hpopupOverlay) {
-                 hpopupOverlay.classList.add('hidden');
+                 hcloseEnquiryPopup();
                                                }
          });
 
          document.addEventListener('keydown', (e) => {
              if (e.key === 'Escape' && !hpopupOverlay.classList.contains('hidden')) {
-                 hpopupOverlay.classList.add('hidden');
+                 hcloseEnquiryPopup();
                                                }
          });
 

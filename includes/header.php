@@ -365,6 +365,10 @@ function renderMenuItems($items, $page)
         transform: rotate(90deg);
     }
 
+    body.enquiry-modal-open .fixed-sidebar-buttons {
+        display: none !important;
+    }
+
     /* Popup Styles */
     .enquiry-popup-overlay {
         position: fixed;
@@ -374,11 +378,14 @@ function renderMenuItems($items, $page)
         height: 100%;
         background: rgba(0, 0, 0, 0.8);
         backdrop-filter: blur(5px);
-        z-index: 1000000;
+        z-index: 1000001;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
-        padding: 20px;
+        padding: 12px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        box-sizing: border-box;
     }
 
     .enquiry-popup-overlay.hidden {
@@ -387,21 +394,36 @@ function renderMenuItems($items, $page)
 
     .enquiry-popup-container {
         background: #ff424f;
-        padding: 50px 40px;
+        padding: 60px 40px 40px 40px;
         border-radius: 20px;
-        max-width: 500px;
+        max-width: min(500px, calc(100vw - 24px));
         width: 100%;
-        max-height: 95vh;
+        max-height: min(92vh, 100%);
+        margin: auto;
+        overflow-x: hidden;
         overflow-y: auto;
         position: relative;
+        box-sizing: border-box;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        scrollbar-width: none;
-        -ms-overflow-style: none;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
     }
 
     .enquiry-popup-container::-webkit-scrollbar {
-        width: 0;
-        display: none;
+        width: 6px;
+    }
+
+    .enquiry-popup-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .enquiry-popup-container::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: 3px;
+    }
+
+    .enquiry-popup-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.6);
     }
 
     /* Keep the embedded widget form compact so it fits without scrolling */
@@ -507,6 +529,34 @@ function renderMenuItems($items, $page)
             font-size: 15px;
             padding: 20px 10px;
         }
+
+        .enquiry-popup-container {
+            padding: 65px 25px 30px 25px;
+            max-height: 88vh;
+        }
+
+        .popup-close-btn {
+            top: 8px;
+            right: 12px;
+            width: 38px;
+            height: 38px;
+            z-index: 10;
+        }
+
+        .enquiry-popup-container .ee-row:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+        .enquiry-popup-container .ee-form-widget label {
+            padding-top: 5px;
+            padding-bottom: 2px;
+            font-size: 14px;
+        }
+
+        .enquiry-popup-container .ee-form-footer {
+            margin-top: 15px;
+            padding-bottom: 10px;
+        }
     }
 
     @media (max-width: 480px) {
@@ -527,12 +577,39 @@ function renderMenuItems($items, $page)
         }
 
         .enquiry-popup-container {
-            padding: 40px 20px;
-            margin: 10px;
+            padding: 60px 15px 25px 15px;
+            margin: 5px;
+            max-height: 90vh;
         }
 
-        .text-[32px] {
-            font-size: 26px !important;
+        .popup-close-btn {
+            top: 5px;
+            right: 10px;
+            width: 35px;
+            height: 35px;
+            z-index: 10;
+        }
+
+        .enquiry-popup-container .ee-row:not(:last-child) {
+            margin-bottom: 9px;
+        }
+
+        .enquiry-popup-container .ee-form-widget label {
+            padding-top: 4px;
+            padding-bottom: 2px;
+            font-size: 13px;
+        }
+
+        .enquiry-popup-container .ee-form-footer {
+            margin-top: 12px;
+            padding-bottom: 15px;
+        }
+
+        .enquiry-popup-container h2.text-\[32px\] {
+            font-size: 22px !important;
+            line-height: 1.25;
+            padding-left: 8px;
+            padding-right: 8px;
         }
     }
 </style>

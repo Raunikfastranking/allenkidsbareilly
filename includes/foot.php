@@ -14,7 +14,14 @@
 
         function openPopup() {
             hpopupOverlay.classList.remove("hidden");
+            document.body.classList.add('enquiry-modal-open');
             document.body.style.overflow = 'hidden';
+        }
+
+        function closePopup() {
+            hpopupOverlay.classList.add('hidden');
+            document.body.classList.remove('enquiry-modal-open');
+            document.body.style.overflow = '';
         }
 
         hopenBtn?.addEventListener('click', function(e) {
@@ -22,22 +29,17 @@
             openPopup();
         });
 
-        hcloseBtn?.addEventListener('click', () => {
-            hpopupOverlay.classList.add('hidden');
-            document.body.style.overflow = '';
-        });
+        hcloseBtn?.addEventListener('click', closePopup);
 
         hpopupOverlay?.addEventListener('click', (e) => {
             if (e.target === hpopupOverlay) {
-                hpopupOverlay.classList.add('hidden');
-                document.body.style.overflow = '';
+                closePopup();
             }
         });
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && !hpopupOverlay.classList.contains('hidden')) {
-                hpopupOverlay.classList.add('hidden');
-                document.body.style.overflow = '';
+                closePopup();
             }
         });
 
